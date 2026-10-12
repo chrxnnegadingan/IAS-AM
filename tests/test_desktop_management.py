@@ -376,7 +376,7 @@ def test_drive_scan_checks_multiple_roots_with_real_engines_and_saves_history(
     view.close()
 
 
-def test_drive_scan_cancellation_preserves_partial_results(qapp):
+def test_drive_scan_cancellation_does_not_emit_partial_results(qapp):
     requested = []
 
     def scan(roots, progress_callback, cancel_check):
@@ -394,7 +394,7 @@ def test_drive_scan_cancellation_preserves_partial_results(qapp):
     view.cancel_active_scan(confirm=False)
     until(qapp, lambda: not view.is_scanning())
     assert requested == ["E:\\", "F:\\"]
-    assert received[0].cancelled and received[0].total_files == 1
+    assert received == []
     assert view.radar.state == "cancelled" and view.select_drives_button.isEnabled()
     view.close()
 

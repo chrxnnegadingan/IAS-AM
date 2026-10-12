@@ -53,7 +53,7 @@ def test_radar_tracks_scan_lifecycle_and_results_are_emitted_after_idle(qapp):
     view.close()
 
 
-def test_cancelled_scan_keeps_partial_results_and_stops_radar(qapp):
+def test_cancelled_scan_does_not_emit_results_and_stops_radar(qapp):
     def folder(path, progress_callback, cancel_check):
         report = ScanReport()
         report.add_result(ScanResult("one.txt"))
@@ -71,8 +71,8 @@ def test_cancelled_scan_keeps_partial_results_and_stops_radar(qapp):
     view.cancel_active_scan(confirm=False)
     until(qapp, lambda: not view.is_scanning())
     assert view.radar.state == "cancelled"
-    assert received[0].cancelled
-    assert received[0].total_files == 1
+    assert received == []
+    assert "No results popup" in view.status_label.text()
     view.close()
 
 

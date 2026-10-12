@@ -344,14 +344,14 @@ class ScanView(QWidget):
 
     @Slot(object)
     def _scan_cancelled(self, result):
-        self._pending_result = result
+        # Cancellation is a terminal status, not a request to open the results
+        # review dialog. Keep partial results inside the report/history flow.
+        self._pending_result = None
         self.radar.set_state("cancelled")
         self.progress.setRange(0, 1)
         self.progress.setValue(0)
         self.progress_title.setText("Scan cancelled")
-        self.status_label.setText(
-            "The scan stopped safely. Partial results are available in Results."
-        )
+        self.status_label.setText("The scan stopped safely. No results popup was opened.")
 
     @Slot(int, int, str)
     def _scan_progress(self, current, total, path):
